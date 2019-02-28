@@ -12,14 +12,14 @@
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
 
-    const EDGE_LENGTH = 60;
+    const EDGE_LENGTH = 30;
 
     const startX = (canvas.width - 10) / 2;
     const startY = 300;
 
     ctx.fillStyle = 'green';
 
-    const TOTAL_LAYERS = 2;
+    const TOTAL_LAYERS = 12;
     const CHILD_COUNT = 3;
 
 
@@ -35,7 +35,7 @@
         console.log('length', nodes.length);
         for (let i = 0; i < nodes.length; i++) {
             const node = nodes[i];
-            setTimeout(function() {drawTree(ctx, node[0], node[1], node[2], depth + 1, childCount)}, 50);
+            setTimeout(function() {drawTree(ctx, node[0], node[1], node[2], depth + 1, childCount)}, 1);
         }
 
     }
@@ -52,14 +52,15 @@
 
             // rotate to achieve location relative to parent's rotation,
             // parent's dictate how much the children are rotated from the "base" position
-            const rotatedCoords = rotate(childrenCoords[0], childrenCoords[1], -(parentValue) * Math.PI / (childCount ));
+            const rotatedCoords = rotate(childrenCoords[0], childrenCoords[1], -(parentValue) * Math.PI / (childCount +1 ));
 
             // return back to basis relative to parent nodes
             const translatedCoords = translate(rotatedCoords[0], rotatedCoords[1], startX, startY);
 
-            setTimeout(function() {drawLine(ctx, startX, startY, translatedCoords[0], translatedCoords[1])}, 50);
+            setTimeout(function() {drawLine(ctx, startX, startY, translatedCoords[0], translatedCoords[1])}, 1);
             list.push(translatedCoords.concat(currValue + parentValue));
         }
+
 
         return list;
     }
