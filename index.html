@@ -1,112 +1,26 @@
 <html>
 <header>
-
+    <script type="module" src="events.js" ></script>
+    <link rel="stylesheet" href="style.css">
 </header>
 <body>
-<canvas id="canvas" width="800" height="700"></canvas>
+    <h1>Graphical Representation of Rotating k-ary Trees</h1>
+    <p></p>
+    <form id="form">
+        <label for="edgeLength">Edge Length</label>
+        <input type="text" id="edgeLength" name="edgeLength">
+
+        <label for="childCount">Child Count</label>
+        <input type="text" id="childCount" name="childCount">
+
+        <label for="layers">Total Layers</label>
+        <input type="text" id="layers" name="layers">
+
+        <input type="submit" value="Draw">
+    </form>
+    <h3>Current Edge Length: <span class="currents" id="currEdgeLength"></span></h3>
+    <h3>Current Child Count: <span class="currents" id="currChildCount"></span></h3>
+    <h3>Current Total Length: <span class="currents" id="currTotalLayers"></span></h3>
+    <canvas id="canvas" width="2000" height="2000"></canvas>
 </body>
-
-<script>
-
-
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-
-    const EDGE_LENGTH = 30;
-
-    const startX = (canvas.width - 10) / 2;
-    const startY = 300;
-
-    ctx.fillStyle = 'green';
-
-    const TOTAL_LAYERS = 12;
-    const CHILD_COUNT = 3;
-
-
-    const currentRow = drawTree(ctx, startX, startY, 0, 0, CHILD_COUNT);
-
-    function drawTree(ctx, startX, startY, rootValue, depth, childCount) {
-
-        if (depth === TOTAL_LAYERS) {
-            return;
-        }
-
-        const nodes = drawAtNode(ctx, startX, startY, rootValue, childCount);
-        console.log('length', nodes.length);
-        for (let i = 0; i < nodes.length; i++) {
-            const node = nodes[i];
-            setTimeout(function() {drawTree(ctx, node[0], node[1], node[2], depth + 1, childCount)}, 1);
-        }
-
-    }
-
-    function drawAtNode(ctx, startX, startY, parentValue, childCount) {
-
-        const list = [];
-        for (let i = 1; i < childCount + 1; i++) {
-
-            const currValue = computeMapping(i, childCount);
-
-            // grab child coords in normal (0,0) case
-            const childrenCoords = childCoords(i, childCount);
-
-            // rotate to achieve location relative to parent's rotation,
-            // parent's dictate how much the children are rotated from the "base" position
-            const rotatedCoords = rotate(childrenCoords[0], childrenCoords[1], -(parentValue) * Math.PI / (childCount +1 ));
-
-            // return back to basis relative to parent nodes
-            const translatedCoords = translate(rotatedCoords[0], rotatedCoords[1], startX, startY);
-
-            setTimeout(function() {drawLine(ctx, startX, startY, translatedCoords[0], translatedCoords[1])}, 1);
-            list.push(translatedCoords.concat(currValue + parentValue));
-        }
-
-
-        return list;
-    }
-
-    function translate(rotateX, rotateY, startX, startY) {
-        return [
-            rotateX + startX,
-            rotateY + startY
-        ];
-    }
-
-    function computeMapping(currentChild, childCount) {
-        return currentChild - round(childCount / 2);
-    }
-
-    function round(val) {
-        return val < 0 ? Math.floor(val) : Math.ceil(val);
-    }
-
-    function childCoords(currentChild, totalChildren) {
-        return [
-            -1 * EDGE_LENGTH * Math.cos(currentChild *Math.PI / (totalChildren+1)),
-            EDGE_LENGTH * Math.sin(currentChild * Math.PI / (totalChildren+1))
-        ];
-    }
-
-    function newCoords(startX, startY, currentChild, totalChildren) {
-        return [
-            startX - EDGE_LENGTH * Math.cos(currentChild * Math.PI / totalChildren),
-            startY + EDGE_LENGTH * Math.sin(currentChild * Math.PI / totalChildren)
-        ];
-    }
-
-    function rotate(startX, startY, radians) {
-        return [
-            Math.cos(radians) * startX - Math.sin(radians) * startY,
-            Math.sin(radians) * startX + Math.cos(radians) * startY
-        ];
-    }
-
-    function drawLine(ctx, startX, startY, endX, endY) {
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(endX, endY);
-        ctx.stroke();
-    }
-
-</script>
 </html>
